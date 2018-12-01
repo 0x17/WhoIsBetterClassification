@@ -6,6 +6,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.evaluation.Prediction;
 import weka.core.Instances;
+import weka.core.Utils;
 import weka.core.converters.ConverterUtils;
 
 import java.nio.file.Files;
@@ -29,7 +30,8 @@ public class Predictor {
         return pair;
     }
 
-    private static Instances attributeSelectionMechanism(Instances instances) throws Exception {
+    private static Instances attributeSelectionMechanism(Instances instances, boolean bypass) throws Exception {
+        if(bypass) return instances;
         AttributeSelection as = new AttributeSelection();
         ASSearch asSearch = ASSearch.forName("weka.attributeSelection.BestFirst", new String[]{"-D", "1", "-N", "4"});
         as.setSearch(asSearch);
@@ -40,18 +42,21 @@ public class Predictor {
     }
 
     public static void main(String[] args) throws Exception {
+        final float train_split = 0.95f;
         Instances namedInstances = ConverterUtils.DataSource.read("whoisbetter_with_names.arff");
-        namedInstances.randomize(new Random(0));
+        namedInstances.randomize(new Random(1));
 
         Instances instances = new Instances(namedInstances);
         instances.deleteStringAttributes();
         instances.setClassIndex(instances.numAttributes()-1);
-        instances = attributeSelectionMechanism(instances);
+        instances = attributeSelectionMechanism(instances, true);
 
-        InstancesPair namedPair = split(namedInstances, 0.75f);
-        InstancesPair pair = split(instances, 0.75f);
+        InstancesPair namedPair = split(namedInstances, train_split);
+        InstancesPair pair = split(instances, train_split);
 
-        Classifier clf = AbstractClassifier.forName("weka.classifiers.functions.Logistic", new String[]{"-R", "0.057140274761388915"});
+        //Classifier clf = AbstractClassifier.forName("weka.classifiers.functions.Logistic", new String[]{"-R", "0.057140274761388915"});
+        Classifier clf = AbstractClassifier.forName("weka.classifiers.trees.RandomForest", Utils.splitOptions("-P 100 -I 100 -num-slots 1 -K 0 -M 1.0 -V 0.001 -S 1"));
+
         clf.buildClassifier(pair.train);
         System.out.println(clf);
 
@@ -72,7 +77,7 @@ public class Predictor {
             sb.append('\n');
         }
 
-        Files.write(Paths.get("predictions.csv"), sb.toString().getBytes());
+        Files.write(Paths.get("predictions_models_rtree.csv"), sb.toString().getBytes());
     }
 
 }

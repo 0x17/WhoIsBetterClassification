@@ -10,9 +10,9 @@ import java.nio.file.StandardCopyOption;
 
 public class Main {
 
-    private static Instances loadData(String filename, boolean removeNames) throws Exception {
+    private static Instances loadData(String filename, boolean removeNames, String sep) throws Exception {
         CSVLoader loader = new CSVLoader();
-        loader.setFieldSeparator(";");
+        loader.setFieldSeparator(sep);
         loader.setStringAttributes("first");
         loader.setNominalAttributes("last");
         loader.setSource(new File(filename));
@@ -41,13 +41,15 @@ public class Main {
     }
 
     public static void main(String... args) throws Exception {
-        String folder = "combined_j30_upto_120_rgen";
+        String folder = "."; //"combined_j30_upto_120_rgen";
+        String infn = "/char_best_model.csv"; // "/whoisbetter.csv"
+        String sep = ","; //";";
 
-        Instances data = loadData(folder+"/whoisbetter.csv", true);
+        Instances data = loadData(folder+infn, true, sep);
         saveAsArffAlt(data, "whoisbetter.arff");
         Files.copy(Paths.get("whoisbetter.arff"), Paths.get("/Users/andreschnabel/whoisbetter.arff"), StandardCopyOption.REPLACE_EXISTING);
 
-        Instances dataWithNames = loadData(folder+"/whoisbetter.csv", false);
+        Instances dataWithNames = loadData(folder+infn, false, sep);
         saveAsArffAlt(dataWithNames, "whoisbetter_with_names.arff");
         Files.copy(Paths.get("whoisbetter_with_names.arff"), Paths.get("/Users/andreschnabel/whoisbetter_with_names.arff"), StandardCopyOption.REPLACE_EXISTING);
     }
