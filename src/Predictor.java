@@ -61,10 +61,23 @@ public class Predictor {
         System.out.println(clf);
 
         Evaluation eval = new Evaluation(pair.train);
-        eval.evaluateModel(clf, pair.validation);
+
+        final boolean predictionsOnValidationData = true;
+
+        Instances predictionSet, namedPredictionSet;
+
+        if(predictionsOnValidationData) {
+            predictionSet = pair.validation;
+            namedPredictionSet = namedPair.validation;
+        } else {
+            predictionSet = instances;
+            namedPredictionSet = namedInstances;
+        }
+
+        eval.evaluateModel(clf, predictionSet);
         System.out.println(eval.toSummaryString("Results:\n", false));
 
-        List<String> instanceNames = namedPair.validation.stream().map(inst -> inst.stringValue(0)).collect(Collectors.toList());
+        List<String> instanceNames = namedPredictionSet.stream().map(inst -> inst.stringValue(0)).collect(Collectors.toList());
         ArrayList<Prediction> preds = eval.predictions();
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<preds.size(); i++) {
@@ -77,7 +90,7 @@ public class Predictor {
             sb.append('\n');
         }
 
-        Files.write(Paths.get("predictions_models_rtree.csv"), sb.toString().getBytes());
+        Files.write(Paths.get("predictions_models_onlyvalidation.csv"), sb.toString().getBytes());
     }
 
 }
