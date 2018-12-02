@@ -60,11 +60,14 @@ public class Predictor {
         clf.buildClassifier(pair.train);
         System.out.println(clf);
 
-        Evaluation eval = new Evaluation(pair.train);
+        predictAndDumpResults(namedInstances, instances, namedPair, pair, clf, true);
+        predictAndDumpResults(namedInstances, instances, namedPair, pair, clf, false);
+    }
 
-        final boolean predictionsOnValidationData = true;
-
+    private static void predictAndDumpResults(Instances namedInstances, Instances instances, InstancesPair namedPair, InstancesPair pair, Classifier clf, boolean predictionsOnValidationData) throws Exception {
         Instances predictionSet, namedPredictionSet;
+
+        Evaluation eval = new Evaluation(pair.train);
 
         if(predictionsOnValidationData) {
             predictionSet = pair.validation;
@@ -90,7 +93,7 @@ public class Predictor {
             sb.append('\n');
         }
 
-        Files.write(Paths.get("predictions_models_onlyvalidation.csv"), sb.toString().getBytes());
+        Files.write(Paths.get("predictions_models_"+(predictionsOnValidationData?"onlyvalidation":"with_train")+".csv"), sb.toString().getBytes());
     }
 
 }
