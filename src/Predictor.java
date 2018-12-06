@@ -42,9 +42,9 @@ public class Predictor {
     }
 
     public static void main(String[] args) throws Exception {
-        final float train_split = 0.95f;
+        final float train_split = 0.90f;
         Instances namedInstances = ConverterUtils.DataSource.read("whoisbetter_with_names.arff");
-        namedInstances.randomize(new Random(1));
+        namedInstances.randomize(new Random(23));
 
         Instances instances = new Instances(namedInstances);
         instances.deleteStringAttributes();
