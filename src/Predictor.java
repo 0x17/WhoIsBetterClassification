@@ -41,7 +41,7 @@ public class Predictor {
         return as.reduceDimensionality(instances);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void trainAndPredictWithAndWithoutNames() throws Exception {
         final float train_split = 0.90f;
         Instances namedInstances = ConverterUtils.DataSource.read("whoisbetter_with_names.arff");
         namedInstances.randomize(new Random(23));
@@ -62,6 +62,10 @@ public class Predictor {
 
         predictAndDumpResults(namedInstances, instances, namedPair, pair, clf, true);
         predictAndDumpResults(namedInstances, instances, namedPair, pair, clf, false);
+    }
+
+    public static void main(String[] args) throws Exception {
+        trainAndPredictWithAndWithoutNames();
     }
 
     private static void predictAndDumpResults(Instances namedInstances, Instances instances, InstancesPair namedPair, InstancesPair pair, Classifier clf, boolean predictionsOnValidationData) throws Exception {

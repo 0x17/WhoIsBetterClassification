@@ -40,7 +40,7 @@ public class Main {
         ConverterUtils.DataSink.write(filename, instances);
     }
 
-    public static void main(String... args) throws Exception {
+    public static void convertAndProcessAllData() throws Exception {
         String folder = "."; //"combined_j30_upto_120_rgen";
         String infn = "/char_best_model.csv"; // "/whoisbetter.csv"
         String sep = ","; //";";
@@ -48,10 +48,16 @@ public class Main {
         Instances data = loadData(folder+infn, true, sep);
         saveAsArffAlt(data, "whoisbetter.arff");
         Files.copy(Paths.get("whoisbetter.arff"), Paths.get("/Users/andreschnabel/whoisbetter.arff"), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get("whoisbetter.arff"), Paths.get("/Users/andreschnabel/Seafile/Dropbox/Scheduling/Code/WhoIsBetter/whoisbetter.arff"), StandardCopyOption.REPLACE_EXISTING);
 
         Instances dataWithNames = loadData(folder+infn, false, sep);
         saveAsArffAlt(dataWithNames, "whoisbetter_with_names.arff");
         Files.copy(Paths.get("whoisbetter_with_names.arff"), Paths.get("/Users/andreschnabel/whoisbetter_with_names.arff"), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(Paths.get("whoisbetter_with_names.arff"), Paths.get("/Users/andreschnabel/Seafile/Dropbox/Scheduling/Code/WhoIsBetter/whoisbetter_with_names.arff"), StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    public static void main(String... args) throws Exception {
+        convertAndProcessAllData();
     }
 
 }
